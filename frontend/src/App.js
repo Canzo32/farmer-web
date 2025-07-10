@@ -457,9 +457,19 @@ function App() {
     return (
       <div className="max-w-6xl mx-auto p-6">
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold mb-4 text-green-800">
-            Welcome, {user?.name}!
-          </h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-green-800">
+              Welcome, {user?.name}!
+            </h2>
+            {user?.role === 'farmer' && (
+              <button
+                onClick={() => setCurrentView('add-produce')}
+                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+              >
+                + Add Produce
+              </button>
+            )}
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {user?.role === 'farmer' && (
               <>
