@@ -915,6 +915,7 @@ function App() {
         {currentView === 'home' && <HomePage />}
         {currentView === 'login' && <LoginForm />}
         {currentView === 'register' && <RegisterForm />}
+        {currentView === 'add-produce' && user?.role === 'farmer' && <AddProduceForm />}
         {currentView === 'dashboard' && user && <Dashboard />}
         {currentView === 'marketplace' && <MarketPlace />}
       </div>
