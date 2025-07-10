@@ -539,12 +539,20 @@ function App() {
                 <p className="text-sm text-gray-500 mb-3">
                   Farmer: {item.farmer_name}
                 </p>
-                {user?.role === 'buyer' && (
+                {user && user.role === 'buyer' && (
                   <button
                     onClick={() => handleOrder(item.id)}
                     className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700"
                   >
                     Order Now
+                  </button>
+                )}
+                {!user && (
+                  <button
+                    onClick={() => setCurrentView('login')}
+                    className="w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700"
+                  >
+                    Login to Order
                   </button>
                 )}
               </div>
