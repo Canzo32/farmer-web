@@ -301,7 +301,6 @@ function App() {
         await axios.post('/produce', submitData);
         alert('Produce listed successfully!');
         setCurrentView('dashboard');
-        fetchDashboardData();
       } catch (error) {
         setError(error.response?.data?.detail || 'Failed to create produce listing');
       } finally {
