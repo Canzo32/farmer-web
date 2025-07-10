@@ -263,6 +263,174 @@ function App() {
     );
   };
 
+  const AddProduceForm = () => {
+    const [formData, setFormData] = useState({
+      title: '',
+      category: 'vegetables',
+      description: '',
+      price: '',
+      quantity: '',
+      unit: 'kg',
+      image_data: ''
+    });
+
+    const handleImageUpload = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64 = e.target.result.split(',')[1];
+          setFormData({...formData, image_data: base64});
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setLoading(true);
+      setError('');
+
+      try {
+        const submitData = {
+          ...formData,
+          price: parseFloat(formData.price),
+          quantity: parseInt(formData.quantity)
+        };
+        
+        await axios.post('/produce', submitData);
+        alert('Produce listed successfully!');
+        setCurrentView('dashboard');
+        fetchDashboardData();
+      } catch (error) {
+        setError(error.response?.data?.detail || 'Failed to create produce listing');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return (
+      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold mb-6 text-center text-green-800">Add New Produce</h2>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Title
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({...formData, title: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Category
+            </label>
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({...formData, category: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+            >
+              <option value="vegetables">Vegetables</option>
+              <option value="fruits">Fruits</option>
+              <option value="grains">Grains</option>
+              <option value="livestock">Livestock</option>
+            </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({...formData, description: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+              rows="3"
+              required
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Price (GHS)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.price}
+                onChange={(e) => setFormData({...formData, price: e.target.value})}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Unit
+              </label>
+              <select
+                value={formData.unit}
+                onChange={(e) => setFormData({...formData, unit: e.target.value})}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+              >
+                <option value="kg">kg</option>
+                <option value="bags">bags</option>
+                <option value="pieces">pieces</option>
+                <option value="bundles">bundles</option>
+              </select>
+            </div>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Quantity
+            </label>
+            <input
+              type="number"
+              value={formData.quantity}
+              onChange={(e) => setFormData({...formData, quantity: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Photo (Optional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+            />
+          </div>
+          <div className="flex gap-4">
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50"
+            >
+              {loading ? 'Adding...' : 'Add Produce'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setCurrentView('dashboard')}
+              className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  };
+
   const Dashboard = () => {
     useEffect(() => {
       fetchDashboardData();
